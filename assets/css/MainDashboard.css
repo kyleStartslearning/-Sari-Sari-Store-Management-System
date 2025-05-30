@@ -1,0 +1,24 @@
+/* MainDashboard.css - Modern Sari-Sari Store Design */
+
+:root {
+    --primary-teal: #009688;
+    --secondary-lime: #CDDC39;
+    --accent-coral: #FF7043;
+}
+
+#productsTable {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+}
+
+.modal-content {
+    border-radius: 16px;
+}
