@@ -1,0 +1,375 @@
+<?php
+// Context detection for unified header
+$currentPage = basename($_SERVER['PHP_SELF']);
+$requestUri = $_SERVER['REQUEST_URI'];
+
+// Detect if this is a management page
+$isManagementPage = (
+    in_array($currentPage, ['dashboard.php', 'products.php', 'add_product.php', 'edit_product.php', 'transactions.php', 'reports.php']) ||
+    strpos($requestUri, 'dashboard') !== false ||
+    strpos($requestUri, 'products') !== false ||
+    strpos($requestUri, 'transactions') !== false ||
+    strpos($requestUri, 'reports') !== false
+);
+
+// Detect the proper asset path based on current directory
+$assetPath = '../assets/';
+if (strpos($_SERVER['PHP_SELF'], '/views/') !== false) {
+    $assetPath = '../assets/';
+} else {
+    $assetPath = 'assets/';
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $isManagementPage ? 'Management Panel - Sari-sari sa Kilig🥰' : 'Sari-sari sa Kilig🥰'; ?></title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables Bootstrap 5 CSS -->
+    <link href="https://cdn.datatables.net/2.3.1/css/dataTables.bootstrap5.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+      <!-- CSS Files -->
+    <link href="<?php echo $assetPath; ?>css/MainDashboard.css" rel="stylesheet">
+    <?php if ($isManagementPage): ?>
+    <link href="<?php echo $assetPath; ?>css/dashboard.css" rel="stylesheet">
+    <?php endif; ?>
+    
+    <style>
+        /* Unified Header Styles - REDUCED SIZE */
+        .modern-navbar {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #3b4a5c 100%) !important;
+            box-shadow: 0 4px 20px rgba(44, 62, 80, 0.3);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-bottom: 2px solid #1abc9c; /* Reduced from 3px */
+            padding: 0.5rem 0; /* Reduced from 1rem */
+        }
+        
+        .navbar-brand {
+            font-weight: 600; /* Reduced from 700 */
+            font-size: 1.4rem; /* Reduced from 1.8rem */
+            color: white !important;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Reduced from 12px */
+            padding: 8px 0; /* Reduced from 15px */
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            transform: translateY(-1px);
+            color: #1abc9c !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Reduced shadow */
+        }
+        
+        .brand-icon {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+            width: 35px; /* Reduced from 45px */
+            height: 35px; /* Reduced from 45px */
+            border-radius: 8px; /* Reduced from 12px */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem; /* Reduced from 1.3rem */
+            box-shadow: 0 2px 8px rgba(26, 188, 156, 0.4); /* Reduced shadow */
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand:hover .brand-icon {
+            transform: rotate(3deg) scale(1.05); /* Reduced rotation */
+            box-shadow: 0 4px 12px rgba(26, 188, 156, 0.6);
+        }
+        
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            padding: 8px 15px !important; /* Reduced from 12px 20px */
+            border-radius: 8px; /* Reduced from 10px */
+            margin: 0 4px; /* Reduced from 8px */
+            transition: all 0.3s ease;
+            color: rgba(236, 240, 241, 0.9) !important;
+            display: flex;
+            align-items: center;
+            gap: 6px; /* Reduced from 8px */
+            font-size: 0.9rem; /* Added smaller font */
+        }
+        
+        .navbar-nav .nav-link:hover {
+            background: rgba(26, 188, 156, 0.15) !important;
+            color: #ecf0f1 !important;
+            transform: translateY(-1px); /* Reduced from -2px */
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%) !important;
+            color: white !important;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(26, 188, 156, 0.3); /* Reduced shadow */
+        }
+        
+        .cart-link {
+            position: relative;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+            border-radius: 8px; /* Reduced from 10px */
+            padding: 8px 15px !important; /* Reduced from 12px 20px */
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3); /* Reduced shadow */
+            transition: all 0.3s ease;
+            color: white !important;
+            font-size: 0.9rem; /* Added smaller font */
+        }
+        
+        .cart-link:hover {
+            transform: translateY(-1px); /* Reduced from -2px */
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+            color: white !important;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -3px; /* Reduced from -5px */
+            right: -3px; /* Reduced from -5px */
+            background: #1abc9c;
+            color: white;
+            border-radius: 50%;
+            width: 18px; /* Reduced from 22px */
+            height: 18px; /* Reduced from 22px */
+            font-size: 10px; /* Reduced from 11px */
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 4px rgba(26, 188, 156, 0.5); /* Reduced shadow */
+        }
+        
+        /* Navbar Toggler - Smaller */
+        .navbar-toggler {
+            padding: 4px 8px; /* Reduced padding */
+            font-size: 1rem; /* Smaller icon */
+            border: none;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3); /* Reduced focus ring */
+        }
+        
+        /* ENLARGED SIDEBAR - OVERRIDE ALL PREVIOUS STYLES */
+        .admin-sidebar {
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 50%, #3b4a5c 100%) !important;
+            border-right: 3px solid #1abc9c !important;
+            min-height: calc(100vh - 60px) !important;
+            padding: 0;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.12);
+            width: 250px !important; /* LARGER */
+            min-width: 250px !important; /* Fixed width */
+            max-width: 250px !important; /* Fixed width */
+            position: fixed; /* Make it fixed position */
+            left: 0;
+            top: 60px;
+            z-index: 1000;
+        }
+        
+        .admin-sidebar .list-group-item {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            color: rgba(236, 240, 241, 0.85) !important;
+            font-weight: 700 !important; /* BOLD */
+            padding: 1.8rem 2.2rem !important; /* LARGER */
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            font-size: 1.4rem !important; /* LARGER TEXT */
+        }
+        
+        .admin-sidebar .list-group-item i {
+            margin-right: 1rem !important; /* MORE SPACE */
+            width: 32px !important; /* LARGER */
+            text-align: center;
+            font-size: 1.7rem !important; /* LARGER ICONS */
+            color: #95a5a6;
+        }
+        
+        .admin-sidebar .list-group-item:hover {
+            background: linear-gradient(90deg, rgba(26, 188, 156, 0.15) 0%, rgba(22, 160, 133, 0.1) 100%) !important;
+            color: #ecf0f1 !important;
+            transform: translateX(5px);
+            border-left-color: #1abc9c;
+        }
+        
+        .admin-sidebar .list-group-item:hover i {
+            color: #1abc9c;
+            transform: scale(1.1);
+        }
+        
+        .admin-sidebar .list-group-item.active {
+            background: linear-gradient(90deg, rgba(26, 188, 156, 0.2) 0%, rgba(22, 160, 133, 0.15) 100%) !important;
+            color: #ecf0f1 !important;
+            border-left-color: #1abc9c;
+            box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3);
+            font-weight: 800 !important; /* EXTRA BOLD */
+        }
+        
+        .admin-sidebar .list-group-item.active i {
+            color: #1abc9c;
+        }
+        
+        .modern-table-card {
+            border: none;
+            border-radius: 12px; /* Reduced from 15px */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+            overflow: hidden;
+        }
+        
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: rgba(44, 62, 80, 0.95);
+                margin-top: 10px; /* Reduced from 15px */
+                border-radius: 8px; /* Reduced from 12px */
+                padding: 15px; /* Reduced from 20px */
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Reduced shadow */
+            }
+            
+            .navbar-nav .nav-link {
+                padding: 10px 15px !important;
+                margin: 2px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Unified Navigation -->
+    <nav class="navbar navbar-expand-lg modern-navbar fixed-top">
+        <div class="container<?php echo $isManagementPage ? '-fluid' : ''; ?>">
+            <a class="navbar-brand" href="<?php echo $isManagementPage ? 'dashboard.php' : 'MainDashboard.php'; ?>">
+                <div class="brand-icon">
+                    <i class="fas fa-shop"></i>
+                </div>
+                <div>
+                    <span><?php echo $isManagementPage ? 'Management Panel' : 'Sari-sari sa Kilig🥰'; ?></span>
+                    <?php if (!$isManagementPage): ?>
+                        <small style="display: block; font-size: 0.7rem; color: rgba(255, 255, 255, 0.7); font-weight: 400;">Where Every Purchase Comes with a Smile and a Little Kilig!</small>
+                    <?php endif; ?>
+                </div>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <?php if ($isManagementPage): ?>
+                        <!-- Management Navigation -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="MainDashboard.php">
+                                <i class="fas fa-home me-2"></i>Store Front
+                            </a>
+                        </li>
+                    <?php else: ?>
+                        <!-- Store Navigation -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="MainDashboard.php">
+                                <i class="fas fa-home me-2"></i>Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.php">
+                                <i class="fas fa-gauge-high me-2"></i> <!-- Changed from fa-tachometer-alt -->
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="products.php">
+                                <i class="fas fa-cubes me-2"></i> <!-- Changed from fa-boxes -->
+                                Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="transactions.php">
+                                <i class="fas fa-chart-simple me-2"></i> <!-- Changed from fa-chart-line -->
+                                Transactions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="reports.php">
+                                <i class="fas fa-chart-column me-2"></i> <!-- Changed from fa-chart-bar -->
+                                Reports
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <!-- Cart available for all pages -->
+                    <li class="nav-item">
+                        <a class="nav-link cart-link" href="cart.php">
+                            <i class="fas fa-shopping-cart me-2"></i>POS / Cart
+                            <?php 
+                            if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0) {
+                                echo '<span class="cart-badge cart-counter">' . count($_SESSION['cart']) . '</span>';
+                            } else {
+                                echo '<span class="cart-badge cart-counter" style="display: none;">0</span>';
+                            }
+                            ?>
+                        </a>
+                    </li>
+                    <?php if ($isManagementPage): ?>
+                        <!-- Management Panel Indicator -->
+                        <li class="nav-item">
+                            <span class="nav-link">
+                                <i class="fas fa-user me-2"></i>Management Panel
+                            </span>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content Area -->
+    <?php if ($isManagementPage): ?>
+        <!-- Management Layout with Sidebar -->
+        <div style="margin-top: 60px;"> <!-- Reduced from 80px -->
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- Management Sidebar -->
+                    <nav class="col-md-3 d-none d-md-block admin-sidebar p-0" style="flex: 0 0 250px; max-width: 250px;"> <!-- Fixed flex basis -->
+                        <div class="list-group list-group-flush">
+                            <a href="dashboard.php" class="list-group-item list-group-item-action" data-page="dashboard.php">
+                                <i class="fas fa-gauge-high me-2"></i> <!-- Changed from fa-tachometer-alt -->
+                                Dashboard
+                            </a>
+                            <a href="products.php" class="list-group-item list-group-item-action" data-page="products.php">
+                                <i class="fas fa-cubes me-2"></i> <!-- Changed from fa-boxes -->
+                                Products
+                            </a>
+                            <a href="transactions.php" class="list-group-item list-group-item-action" data-page="transactions.php">
+                                <i class="fas fa-chart-simple me-2"></i> <!-- Changed from fa-chart-line -->
+                                Transactions
+                            </a>
+                            <a href="reports.php" class="list-group-item list-group-item-action" data-page="reports.php">
+                                <i class="fas fa-chart-column me-2"></i> <!-- Changed from fa-chart-bar -->
+                                Reports
+                            </a>
+                        </div>
+                    </nav>
+
+                    <!-- Main content -->
+                    <main class="col-md-9 ms-sm-auto px-md-4" style="margin-left: 250px; flex: 1; max-width: calc(100% - 250px);"> <!-- Adjusted margin and width -->
+                        <div class="main-content">
+    <?php else: ?>
+        <!-- Store Front Layout -->
+        <div style="margin-top: 60px;"> <!-- Reduced from 80px -->
+    <?php endif; ?>
