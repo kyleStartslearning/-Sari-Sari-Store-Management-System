@@ -1,1 +1,0 @@
-# -Sari-Sari-Store-Management-System
