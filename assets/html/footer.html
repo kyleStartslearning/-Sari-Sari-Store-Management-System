@@ -1,0 +1,157 @@
+<?php
+// Context detection for unified footer (same logic as header)
+$currentPage = basename($_SERVER['PHP_SELF']);
+$requestUri = $_SERVER['REQUEST_URI'];
+
+$isManagementPage = (
+    in_array($currentPage, ['dashboard.php', 'products.php', 'add_product.php', 'edit_product.php', 'transactions.php', 'reports.php']) ||
+    strpos($requestUri, 'dashboard') !== false ||
+    strpos($requestUri, 'products') !== false ||
+    strpos($requestUri, 'transactions') !== false ||
+    strpos($requestUri, 'reports') !== false
+);
+?>
+
+<?php if ($isManagementPage): ?>
+    <!-- Close Management Layout -->
+                        </div> <!-- Close .main-content -->
+                    </main> <!-- Close main content area -->
+                </div> <!-- Close .row -->
+            </div> <!-- Close .container-fluid -->
+        </div>
+<?php else: ?>
+    <!-- Close Store Front Layout -->
+        </div>
+        
+        <!-- Store Front Footer -->
+        <footer style="background: linear-gradient(135deg, #009688 0%, #00695C 100%); color: white; padding: 40px 0; margin-top: 60px; box-shadow: 0 -4px 20px rgba(0, 150, 136, 0.3);">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                            <div style="background: linear-gradient(135deg, #CDDC39 0%, #8BC34A 100%); color: #555555; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(205, 220, 57, 0.4);">
+                                <i class="fas fa-shop"></i> <!-- Changed from fa-store -->
+                            </div>
+                            <h5 style="margin: 0; font-weight: 700; font-size: 1.5rem;">Sari-sari sa Kilig🥰</h5>
+                        </div>
+                        <p style="color: rgba(255, 255, 255, 0.9); line-height: 1.6;">Your neighborhood one-stop shop for all your daily needs. Quality products, friendly service, and unbeatable prices.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <h5 style="font-weight: 600; margin-bottom: 20px; color: #CDDC39;">Contact Us</h5>
+                        <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 10px;">
+                            <i class="fas fa-phone" style="color: #CDDC39; margin-right: 10px;"></i> 1LoveU0991
+                        </p>
+                        <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 10px;">
+                            <i class="fas fa-envelope" style="color: #CDDC39; margin-right: 10px;"></i> info@SariSariSaKiligStore.com
+                        </p>
+                        <p style="color: rgba(255, 255, 255, 0.9);">
+                            <i class="fas fa-map-marker-alt" style="color: #CDDC39; margin-right: 10px;"></i> Your Local Neighborhood
+                        </p>
+                    </div>
+                </div>
+                <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 30px 0 20px 0;">
+                <div class="text-center">
+                    <p style="margin: 0; color: rgba(255, 255, 255, 0.8);">
+                        &copy; <?php echo date('Y'); ?> Sari-sari sa Kilig🥰. All rights reserved. | Made with <i class="fas fa-heart" style="color: #FF7043;"></i> for our community
+                    </p>
+                </div>
+            </div>
+        </footer>
+<?php endif; ?>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.1/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.3.1/js/dataTables.bootstrap5.js"></script>
+
+<?php if ($isManagementPage): ?>
+<!-- Management-Specific Scripts -->
+<script>
+$(document).ready(function() {
+    console.log('Management page scripts loaded');
+    
+    // Transactions Table Initialization
+    if ($('#transactionsTable').length) {
+        console.log('Initializing Transactions DataTables...');
+        
+        try {
+            $('#transactionsTable').DataTable({
+                "responsive": false,
+                "scrollX": false,
+                "autoWidth": false,
+                "pageLength": 15,
+                "lengthMenu": [[10, 15, 25, 50], [10, 15, 25, 50]],
+                "order": [[0, "desc"]],
+                "processing": true,
+                "deferRender": true,
+                "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                       '<"row"<"col-sm-12"tr>>' +
+                       '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                "language": {
+                    "search": '<i class="fas fa-magnifying-glass"></i> Search transactions:',
+                    "lengthMenu": '<i class="fas fa-list-ol me-1"></i>Show _MENU_ transactions per page',
+                    "info": '<i class="fas fa-info-circle me-1"></i>Showing _START_ to _END_ of _TOTAL_ transactions',
+                    "infoEmpty": '<i class="fas fa-exclamation-circle me-1"></i>No transactions available',
+                    "infoFiltered": '<i class="fas fa-filter me-1"></i>(filtered from _MAX_ total transactions)',
+                    "emptyTable": '<i class="fas fa-inbox me-2"></i>No transactions found',
+                    "loadingRecords": '<i class="fas fa-spinner fa-spin me-1"></i>Loading transactions...',
+                    "processing": '<i class="fas fa-cog fa-spin me-1"></i>Processing...',
+                    "paginate": {
+                        "first": '<i class="fas fa-angles-left"></i>',
+                        "last": '<i class="fas fa-angles-right"></i>',
+                        "next": '<i class="fas fa-angle-right"></i>',
+                        "previous": '<i class="fas fa-angle-left"></i>'
+                    }
+                },
+                "columnDefs": [
+                    { "targets": [5], "orderable": false, "searchable": false, "className": "text-center" }
+                ],
+                "drawCallback": function(settings) {
+                    $('[data-bs-toggle="tooltip"]').tooltip();
+                    $('#transactionsTable tbody tr').each(function(index) {
+                        if (index % 2 === 0) {
+                            $(this).css('background-color', 'rgba(40, 167, 69, 0.03)');
+                        } else {
+                            $(this).css('background-color', '#ffffff');
+                        }
+                    });
+                },
+                "initComplete": function() {
+                    $('.dataTables_filter input').attr('placeholder', 'Search transactions...');
+                }
+            });
+        } catch (error) {
+            console.error('Error initializing Transactions DataTables:', error);
+        }
+    }
+});
+</script>
+
+<?php else: ?>
+<!-- Store Front Specific Scripts -->
+<script>
+$(document).ready(function() {
+    console.log('Store front scripts loaded');
+    
+    // Add smooth scroll animation for buttons
+    $('.btn').on('click', function() {
+        $(this).addClass('animate__pulse');
+        setTimeout(() => {
+            $(this).removeClass('animate__pulse');
+        }, 600);
+    });
+});
+</script>
+<?php endif; ?>
+
+<!-- Load custom JavaScript if exists -->
+<?php
+$jsPath = ($isManagementPage ? '../' : '') . 'assets/js/JSfunction.js';
+if (file_exists($jsPath)) {
+    echo '<script src="' . $jsPath . '"></script>';
+}
+?>
+
+</body>
+</html>
