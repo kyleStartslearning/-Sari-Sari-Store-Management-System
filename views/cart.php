@@ -99,9 +99,17 @@ foreach ($cart as $item) {
             });
     }
 
-    function removeItem(index) {
-        if (confirm('Are you sure you want to remove this item?')) {
-            fetch(`../controllers/ProductController.php?action=removeFromCart&index=${index}`)
+        function removeItem(index) {
+            if (confirm('Are you sure you want to remove this item?')) {
+                fetch('../controllers/ProductController.php?action=removeFromCart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        index: index
+                    })
+                })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -114,8 +122,8 @@ foreach ($cart as $item) {
                     console.error('Error:', error);
                     alert('An error occurred while removing the item');
                 });
+            }
         }
-    }
 
     function clearCart() {
         if (confirm('Are you sure you want to clear your cart?')) {

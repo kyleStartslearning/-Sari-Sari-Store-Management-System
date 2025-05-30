@@ -293,24 +293,15 @@ switch ($action) {
             header('Content-Type: application/json');
             
             $input = json_decode(file_get_contents('php://input'), true);
-            $productId = $input['product_id'] ?? null;
+            $index = (int)($input['index'] ?? -1);
             
-            if (!$productId) {
-                throw new Exception('Product ID is required');
+            if (!isset($_SESSION['cart']) || $index < 0 || !isset($_SESSION['cart'][$index])) {
+                throw new Exception('Invalid cart item');
             }
             
-            if (!isset($_SESSION['cart'])) {
-                throw new Exception('Cart is empty');
-            }
-            
-            // Find and remove item from cart
-            foreach ($_SESSION['cart'] as $key => $item) {
-                if ($item['product_id'] == $productId) {
-                    unset($_SESSION['cart'][$key]);
-                    $_SESSION['cart'] = array_values($_SESSION['cart']); // Reindex array
-                    break;
-                }
-            }
+            // Remove item from cart
+            unset($_SESSION['cart'][$index]);
+            $_SESSION['cart'] = array_values($_SESSION['cart']); // Reindex array
             
             // Calculate total cart count
             $cartCount = 0;
