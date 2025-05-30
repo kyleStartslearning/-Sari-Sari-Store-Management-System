@@ -130,7 +130,9 @@ $endDate = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-t');
                 <h5 class="m-0">Daily Sales Chart</h5>
             </div>
             <div class="card-body">
-                <canvas id="dailySalesChart"></canvas>
+                <div class="chart-container">
+                    <canvas id="dailySalesChart"></canvas>
+                </div>
             </div>
         </div>
 
@@ -266,6 +268,13 @@ function loadProductSalesReport(startDate, endDate) {
 function showReportsContainer() {
     document.getElementById('loadingState').classList.add('d-none');
     document.getElementById('reportsContainer').classList.remove('d-none');
+    
+    // Add a small delay to ensure container is properly rendered
+    setTimeout(() => {
+        if (dailySalesChart) {
+            dailySalesChart.resize();
+        }
+    }, 100);
 }
 
 function showError(message) {
@@ -328,6 +337,8 @@ function displayDailySalesChart(dailySales) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: true, // Add this
+            aspectRatio: 2, // Add this for better control
             interaction: {
                 mode: 'index',
                 intersect: false,
@@ -374,6 +385,13 @@ function displayDailySalesChart(dailySales) {
             }
         }
     });
+    
+    // Force resize after creation
+    setTimeout(() => {
+        if (dailySalesChart) {
+            dailySalesChart.resize();
+        }
+    }, 50);
 }
 
 function displayProductSalesReport(productReport) {
@@ -431,5 +449,18 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 </script>
+
+<style>
+#dailySalesChart {
+    max-height: 400px !important;
+    width: 100% !important;
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+}
+</style>
 
 <?php include '../assets/html/footer.html'; ?>
