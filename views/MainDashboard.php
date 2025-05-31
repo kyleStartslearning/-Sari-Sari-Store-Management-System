@@ -6,18 +6,17 @@ if (session_status() === PHP_SESSION_NONE) {
 include_once '../assets/html/header.html';
 ?>
 
+<link href="../assets/css/MainDashboard.css" rel="stylesheet">
+>
 <style>
-/* ✅ OVERRIDE: Force content to be visible */
-.dashboard-container {
-    opacity: 1 !important;
-    transform: none !important;
-}
+body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important; }
+.dashboard-container { display: block !important; visibility: visible !important; }
 </style>
 
 <div class="dashboard-container">
     <div class="main-card">
         <div class="dashboard-header">
-            <!-- Dashboard Header -->
+            
             <h1 class="dashboard-title">
                 <i class="fas fa-gauge-high me-3"></i>
                 Store Front
@@ -25,7 +24,6 @@ include_once '../assets/html/header.html';
             <p class="dashboard-subtitle">Discover fresh products and amazing deals in our neighborhood store</p>
         </div>
 
-        <!-- Error State -->
         <div id="errorState" class="d-none">
             <div class="alert alert-danger text-center">
                 <i class="fas fa-exclamation-triangle me-2"></i>
@@ -41,7 +39,7 @@ include_once '../assets/html/header.html';
         <!-- Products Container -->
         <div id="productsContainer">
             <!-- Category Filter Section -->
-            <div class="filter-section mb-4" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid #dee2e6; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <div class="filter-section mb-4">
                 <div class="row align-items-center">
                     <div class="col-md-6">
                         <div class="d-flex align-items-center">
